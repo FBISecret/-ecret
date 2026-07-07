@@ -1283,6 +1283,12 @@ class KickAPIClient:
         )
         self.session.timeout = self.timeout
         
+        try:
+            import certifi
+            self.session.session_tls.ca_certificate_path = certifi.where()
+        except Exception:
+            pass
+        
         self.session.headers.update({
             "User-Agent": generate_user_agent(),
             "Accept": "application/json, text/plain, */*",
