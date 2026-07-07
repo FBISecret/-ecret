@@ -177,14 +177,18 @@ class ProxyPool:
 
 
 def build_proxy_entry(line: str) -> Optional[ProxyEntry]:
-    if "@" not in line:
-        return None
-    auth_part, host_part = line.rsplit("@", 1)
-    if ":" not in auth_part or ":" not in host_part:
-        return None
-    username, password = auth_part.split(":", 1)
-    host, port = host_part.rsplit(":", 1)
-    http_url = f"http://{username}:{password}@{host}:{port}"
+    if "@" in line:
+        auth_part, host_part = line.rsplit("@", 1)
+        if ":" not in auth_part or ":" not in host_part:
+            return None
+        username, password = auth_part.split(":", 1)
+        host, port = host_part.rsplit(":", 1)
+        http_url = f"http://{username}:{password}@{host}:{port}"
+    else:
+        if ":" not in line:
+            return None
+        host, port = line.rsplit(":", 1)
+        http_url = f"http://{host}:{port}"
     ws_proxy = None
     if Proxy is not None:
         try:
